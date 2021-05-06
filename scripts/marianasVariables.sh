@@ -19,10 +19,18 @@ module use -a $PROJ_DIR/src/spack/share/spack/modules/$SPACK_ARCH/
 source $PROJ_DIR/src/spack/share/spack/setup-env.sh
 
 export MY_NVCC_ARCH="sm_60"
-export NVBLAS_CONFIG_FILE=$PROJ_DIR/$MY_CLUSTER/nvblas.conf
 module load gcc/7.3.0
 module load cuda/10.2.89
 module load openmpi/3.1.3
-module load cmake-3.18.4-gcc-7.3.0-fuktvvh
+module load cmake/3.19.6
 
-spack env activate exago-v0-99-2-hiop-v0-3-99-2-marianas --with-view
+spack env activate hiop-v0-4-2-deps-marianas
+cat >>$BUILDDIR/nvblas.conf <<EOD
+NVBLAS_LOGFILE  nvblas.log
+NVBLAS_TRACE_LOG_ENABLED
+NVBLAS_CPU_BLAS_LIB $(spack location -i openblas)
+NVBLAS_GPU_LIST ALL0
+NVBLAS_TILE_DIM 2048
+NVBLAS_AUTOPIN_MEM_ENABLED
+EOD
+export NVBLAS_CONFIG_FILE=$BUILDDIR/nvblas.conf
