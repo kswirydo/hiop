@@ -183,10 +183,11 @@ public:
     v.copyFrom(from);
     int fail = verifyAnswer(&v, one);
 
-    const real_type* from_buffer = createLocalBuffer(N, three);
+    real_type* from_buffer = createLocalBuffer(N, three);
     v.copyFrom(from_buffer);
     fail += verifyAnswer(&v, three);
-
+    deleteLocalBuffer(from_buffer);
+    
     printMessage(fail, __func__, rank);
     return reduceReturn(fail, &v);
   }
@@ -252,6 +253,7 @@ public:
     fail += verifyAnswer(&x, two);
     deleteLocalBuffer(zero_buffer);
 
+    delete zero;
     printMessage(fail, __func__, rank);
     return reduceReturn(fail, &x);
   }
@@ -371,6 +373,7 @@ public:
     zero->copyToStarting(to, 0);
     fail += verifyAnswer(&to, to_val);
 
+    delete zero;
     printMessage(fail, __func__, rank);
     return reduceReturn(fail, &from);
   }
@@ -637,7 +640,7 @@ public:
         return isValueCopied ? from_val : to_val;
       });
 
-    
+    delete zero;
     printMessage(fail, __func__, rank);
     return reduceReturn(fail, &to);
   }
