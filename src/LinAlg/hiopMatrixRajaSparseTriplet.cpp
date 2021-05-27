@@ -612,7 +612,7 @@ void hiopMatrixRajaSparseTriplet::copy_to(int* irow, int* jcol, double* val)
   resmgr.copy(val, values_);
 }
 
-void hiopMatrixSparsehiopMatrixRajaSparseTripletTriplet::copy_to(hiopMatrixDense& W)
+void hiopMatrixRajaSparseTriplet::copy_to(hiopMatrixDense& W)
 {
   assert(W.m() == nrows_);
   assert(W.n() == ncols_);
