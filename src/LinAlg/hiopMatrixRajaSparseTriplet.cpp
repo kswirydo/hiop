@@ -880,8 +880,6 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
   // build rsi on the host, then copy it to the device for simplicity
   int it_triplet = 0;
   rsi->idx_start_[0] = 0;
-    std::cout<< "nrow:" << this->nrows_ << ":" << this->nnz_<<std::endl;
-    std::cout<< "nrow:" << nrows_ << ":" << nnz_<<std::endl;
 
   for(int i = 1; i <= this->nrows_; i++)
   {
@@ -903,7 +901,6 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
     }
     assert(rsi->idx_start_[i] == it_triplet);
   }
-  std::cout<<it_triplet << ":" << this->nnz_<<std::endl;
   assert(it_triplet==this->nnz_);
 
   auto& rm = umpire::ResourceManager::getInstance();
@@ -1088,16 +1085,12 @@ void hiopMatrixRajaSparseTriplet::set_Jac_FR(const hiopMatrixSparse& Jac_c,
 
   assert(nnz_ == nnz_Jac_c_new + nnz_Jac_d_new);
   
-  std::cout<<"JC" <<std::endl;
-  std::cout<<"R" << m_c << ":" << nnz_Jac_c << std::endl;
   if(J_c.row_starts_host == nullptr){
     J_c.row_starts_host = J_c.allocAndBuildRowStarts();
   }
   assert(J_c.row_starts_host);
   int* Jc_row_st = J_c.row_starts_host->idx_start_;
 
-  std::cout<<"JD" <<std::endl;
-  std::cout<<"R" << m_d << ":" << nnz_Jac_d << std::endl;
   if(J_d.row_starts_host == nullptr){
     J_d.row_starts_host = J_d.allocAndBuildRowStarts();
   }
@@ -1436,7 +1429,6 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
 
   assert(nnz_ == nnz1);
 
-  std::cout<<"M2" <<std::endl;
   if(M2.row_starts_host==NULL)
     M2.row_starts_host = M2.allocAndBuildRowStarts();
   assert(M2.row_starts_host);
@@ -1521,8 +1513,6 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
   
   // extend Hess to the p and n parts --- element
   if(MHSS != nullptr) {
-      std::cout<<"M1" <<std::endl;
-
     if(M1.row_starts_host==NULL)
       M1.row_starts_host = M1.allocAndBuildRowStarts();
     assert(M1.row_starts_host);

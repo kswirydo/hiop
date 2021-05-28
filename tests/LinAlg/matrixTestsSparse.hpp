@@ -1004,24 +1004,15 @@ public:
     int mD = D.m();
     int nC = C.n();
     int nD = D.n();
-        
-    std::cout<< "mC " << mC << ": " << C_nnz << std::endl;
-    std::cout<< "mD " << mD << ": " << D_nnz << std::endl;
-    
+
     A.set_Jac_FR(C, D, A.i_row(), A.j_col(), A.M());
 
-
-    std::cout<< "set OK" << std::endl;
     // copy to dense matrix
     A.copy_to(W);
 
     const auto* iRow = getRowIndices(&A);
     const auto* jCol = getColumnIndices(&A);
     auto nnz = A.numberOfNonzeros();
-
-        std::cout<< "set OK2" << std::endl;
-
-
 
     fail += verifyAnswer(&W,
       [=] (local_ordinal_type i, local_ordinal_type j) -> real_type
