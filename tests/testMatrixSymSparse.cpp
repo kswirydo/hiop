@@ -176,7 +176,7 @@ int main(int argc, char** argv)
 
   hiop::hiopOptions options;
 
-  local_ordinal_type M_local = 5;
+  local_ordinal_type M_local = 10;
 
   // Sparse matrix is not distributed
   global_ordinal_type M_global = M_local;
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
     hiop::tests::MatrixTestsRajaSymSparseTriplet test;
     
     // Establishing sparsity pattern and initializing Matrix
-    local_ordinal_type entries_per_row = 5;
+    local_ordinal_type entries_per_row = 2;
     local_ordinal_type nnz = M_local * entries_per_row;
 
     hiop::hiopVectorRajaPar vec_m(M_global, mem_space);
