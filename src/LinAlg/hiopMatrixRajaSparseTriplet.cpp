@@ -1529,6 +1529,15 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
     assert(M1.row_starts_host);
     int* M1_idx_start = M1.row_starts_host->idx_start_;
   
+    M2.copyFromDev();
+    for(int ii=0;ii<nnz_;ii++){
+      printf("%d   %d-%d\n",ii, iRow_host_[ii],jCol_host_[ii]);
+    }
+  
+  
+  
+  
+  
     double* M1values = M1.M();
     const double* M2values = M2.M();
   
