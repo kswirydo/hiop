@@ -1454,7 +1454,10 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
         RAJA::RangeSegment(0, m1+1),
         RAJA_LAMBDA(RAJA::Index_type i)
         {
-          m1_row_start[i] = 0;
+          if(i>0)
+            m1_row_start[i] = 1;
+          else 
+           m1_row_start[i] = 0;
         }
       );
 
@@ -1468,9 +1471,9 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
           if(nnz_in_row > 0 && M2iRow[k_base] == M2jCol[k_base]) {
             // first nonzero in this row is a diagonal term 
             // skip it since we will defined the diagonal nonezero
-            m1_row_start[i+1] = nnz_in_row-1;
+            m1_row_start[i+1] += nnz_in_row-1;
           } else {
-            m1_row_start[i+1] = nnz_in_row;
+            m1_row_start[i+1] += nnz_in_row;
           }
         }
       );
