@@ -1513,8 +1513,10 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
   
   // extend Hess to the p and n parts --- element
   if(MHSS != nullptr) {
-    if(M1.row_starts_host==NULL)
+    if(M1.row_starts_host==NULL){
+      copyFromDev();
       M1.row_starts_host = M1.allocAndBuildRowStarts();
+    }
     assert(M1.row_starts_host);
     int* M1_idx_start = M1.row_starts_host->idx_start_;
   
