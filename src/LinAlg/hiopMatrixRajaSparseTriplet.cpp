@@ -1480,7 +1480,7 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       int *work_host_ = static_cast<int*>(hostalloc.allocate((m1+1) * sizeof(int)));
       resmgr.copy(work_host_, m1_row_start);
       for(int ii=0;ii<m1+1;ii++){
-        std::cout<< wrok_host_[ii] << std::endl;
+        std::cout<< work_host_[ii] << std::endl;
       }
 
 
