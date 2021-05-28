@@ -332,7 +332,7 @@ class hiopMatrixRajaSymSparseTriplet : public hiopMatrixRajaSparseTriplet
 {
 public: 
   hiopMatrixRajaSymSparseTriplet(int n, int nnz, std::string memspace)
-    : hiopMatrixRajaSparseTriplet(n, n, nnz, memspace)
+    : hiopMatrixRajaSparseTriplet(n, n, nnz, memspace), nnz_offdiag_{-1}
   {
   }
   virtual ~hiopMatrixRajaSymSparseTriplet() {}  
@@ -401,6 +401,9 @@ public:
                            int* jHSS,
                            double* MHSS,
                            const hiopVector& add_diag);
+
+protected:
+  mutable int nnz_offdiag_;     ///< number of nonzero entries
 
 };
 } //end of namespace
