@@ -1088,6 +1088,7 @@ void hiopMatrixRajaSparseTriplet::set_Jac_FR(const hiopMatrixSparse& Jac_c,
   assert(nnz_ == nnz_Jac_c_new + nnz_Jac_d_new);
   
   std::cout<<"JC" <<std::endl;
+  std::cout<<"R" << m_c << ":" << nnz_Jac_c << std::endl;
   if(J_c.row_starts_host == nullptr){
     J_c.row_starts_host = J_c.allocAndBuildRowStarts();
   }
@@ -1095,6 +1096,7 @@ void hiopMatrixRajaSparseTriplet::set_Jac_FR(const hiopMatrixSparse& Jac_c,
   int* Jc_row_st = J_c.row_starts_host->idx_start_;
 
   std::cout<<"JD" <<std::endl;
+  std::cout<<"R" << m_d << ":" << nnz_Jac_d << std::endl;
   if(J_d.row_starts_host == nullptr){
     J_d.row_starts_host = J_d.allocAndBuildRowStarts();
   }
