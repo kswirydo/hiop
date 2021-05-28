@@ -966,7 +966,8 @@ public:
         return (indexExists) ? A_val: zero;
       }
     );
-
+    printMessage(fail, __func__);
+    return fail;
   }
 
   /**

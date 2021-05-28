@@ -388,10 +388,7 @@ public:
     return true;
   }
   
-  virtual long long numberOfOffDiagNonzeros() const {
-    assert(false && "not needed / implemented");
-    return 0;
-  }
+  virtual long long numberOfOffDiagNonzeros() const;
 
   virtual void set_Jac_FR(const hiopMatrixSparse& Jac_c,
                           const hiopMatrixSparse& Jac_d,

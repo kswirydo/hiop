@@ -1369,6 +1369,29 @@ startingAtAddSubDiagonalToStartingAt(int diag_src_start,
     });
 }
 
+
+long long hiopMatrixRajaSymSparseTriplet::numberOfOffDiagNonzeros() const 
+{
+  if(-1==nnz_offdiag_){
+    nnz_offdiag_= nnz_;
+    int *irow = iRow_;
+    int *jcol = jCol_;
+    RAJA::ReduceSum<hiop_raja_reduce, int> sum(0);
+    RAJA::forall<hiop_raja_exec>(
+      RAJA::RangeSegment(0, nnz_),
+      RAJA_LAMBDA(RAJA::Index_type i)
+      {
+        if (irow[i]==jcol[i]){
+          sum += 1; 
+        }
+      }
+    );
+    nnz_offdiag_ -= static_cast<int>(sum.get());
+  }
+
+  return nnz_offdiag_;
+}
+
 /*
 *  extend original Hess to [Hess+diag_term]
 */
