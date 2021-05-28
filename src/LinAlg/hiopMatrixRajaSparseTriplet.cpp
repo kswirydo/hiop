@@ -1214,6 +1214,7 @@ void hiopMatrixRajaSparseTriplet::set_Jac_FR(const hiopMatrixSparse& Jac_c,
       }
     );
   }
+  copyFromDev();
 }
 
 /**********************************************************************************
@@ -1573,6 +1574,7 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       );
     }
   }
+  copyFromDev();
 }
 
 } //end of namespace
