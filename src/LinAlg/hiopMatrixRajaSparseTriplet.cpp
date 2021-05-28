@@ -901,6 +901,7 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
     }
     assert(rsi->idx_start_[i] == it_triplet);
   }
+  printf("%d-%d",it_triplet,nnz_);
   assert(it_triplet==this->nnz_);
 
   auto& rm = umpire::ResourceManager::getInstance();
@@ -1527,9 +1528,11 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       );
     }
   }
-  
+
   // extend Hess to the p and n parts --- element
   if(MHSS != nullptr) {
+    
+    
     if(M1.row_starts_host==NULL){
       copyFromDev();
       M1.row_starts_host = M1.allocAndBuildRowStarts();
@@ -1539,9 +1542,11 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
   
     M2.copyFromDev();
     for(int ii=0;ii<nnz_;ii++){
-      printf("%d   %d-%d\n",ii, iRow_host_[ii],jCol_host_[ii]);
+      printf("New %d   %d-%d\n",ii, iRow_host_[ii],jCol_host_[ii]);
     }
-  
+    for(int ii=0;ii<M2.numberOfNonzeros();ii++){
+      printf("Old %d   %d-%d\n",ii, M2.iRow_host_[ii],M2.jCol_host_[ii]);
+    }  
   
   
   
