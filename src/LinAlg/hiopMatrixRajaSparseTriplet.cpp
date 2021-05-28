@@ -901,7 +901,7 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
     }
     assert(rsi->idx_start_[i] == it_triplet);
   }
-  printf("%d-%d",it_triplet,nnz_);
+  printf("in Func %d-%d",it_triplet,nnz_);
   assert(it_triplet==this->nnz_);
 
   auto& rm = umpire::ResourceManager::getInstance();
@@ -1481,7 +1481,7 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       int *work_host_ = static_cast<int*>(hostalloc.allocate((m1+1) * sizeof(int)));
       resmgr.copy(work_host_, m1_row_start);
       for(int ii=0;ii<m1+1;ii++){
-        std::cout<< work_host_[ii] << std::endl;
+        printf("%d/%d: %d \n", ii, m1+1, work_host_[ii]);
       }
 
 
@@ -1533,20 +1533,24 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
   if(MHSS != nullptr) {
     
     
+    M2.copyFromDev();
+    for(int ii=0;ii<M2.numberOfNonzeros();ii++){
+      printf("M2 %d    %d-%d  %f\n",ii, M2.iRow_host_[ii],M2.jCol_host_[ii], M2.M_host()[ii]);
+    }  
+    
     if(M1.row_starts_host==NULL){
       copyFromDev();
+      
+      for(int ii=0;ii<nnz_;ii++){
+        printf("New %d   %d-%d\n",ii, iRow_host_[ii], jCol_host_[ii]);
+      }
+      
       M1.row_starts_host = M1.allocAndBuildRowStarts();
     }
     assert(M1.row_starts_host);
     int* M1_idx_start = M1.row_starts_host->idx_start_;
   
-    M2.copyFromDev();
-    for(int ii=0;ii<nnz_;ii++){
-      printf("New %d   %d-%d\n",ii, iRow_host_[ii],jCol_host_[ii]);
-    }
-    for(int ii=0;ii<M2.numberOfNonzeros();ii++){
-      printf("Old %d   %d-%d\n",ii, M2.iRow_host_[ii],M2.jCol_host_[ii]);
-    }  
+
   
   
   
