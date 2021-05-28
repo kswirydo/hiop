@@ -880,6 +880,8 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
   // build rsi on the host, then copy it to the device for simplicity
   int it_triplet = 0;
   rsi->idx_start_[0] = 0;
+    std::cout<< "nrow:" << this->nrows_ << ":" << this->nnz_<<std::endl;
+
   for(int i = 1; i <= this->nrows_; i++)
   {
     rsi->idx_start_[i]=rsi->idx_start_[i-1];
