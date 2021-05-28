@@ -901,7 +901,6 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
     }
     assert(rsi->idx_start_[i] == it_triplet);
   }
-  printf("in Func %d-%d",it_triplet,nnz_);
   assert(it_triplet==this->nnz_);
 
   auto& rm = umpire::ResourceManager::getInstance();
@@ -1480,15 +1479,6 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       
       RAJA::inclusive_scan_inplace<hiop_raja_exec>(m1_row_start,m1_row_start+m1+1,RAJA::operators::plus<int>());
       
-      umpire::Allocator hostalloc = resmgr.getAllocator("HOST");
-      int *work_host_ = static_cast<int*>(hostalloc.allocate((m1+1) * sizeof(int)));
-      resmgr.copy(work_host_, m1_row_start);
-      for(int ii=0;ii<m1+1;ii++){
-        printf("%d/%d: %d \n", ii, m1+1, work_host_[ii]);
-      }
-
-
-      
       RAJA::forall<hiop_raja_exec>(
         RAJA::RangeSegment(0, m2),
         RAJA_LAMBDA(RAJA::Index_type i)
@@ -1533,31 +1523,14 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
   }
 
   // extend Hess to the p and n parts --- element
-  if(MHSS != nullptr) {
-    
-    
-    M2.copyFromDev();
-    for(int ii=0;ii<M2.numberOfNonzeros();ii++){
-      printf("M2 %d    %d-%d  %f\n",ii, M2.iRow_host_[ii],M2.jCol_host_[ii], M2.M_host()[ii]);
-    }  
-    
+  if(MHSS != nullptr) {    
     if(M1.row_starts_host==NULL){
       copyFromDev();
-      
-      for(int ii=0;ii<nnz_;ii++){
-        printf("New %d   %d-%d\n",ii, iRow_host_[ii], jCol_host_[ii]);
-      }
-      
       M1.row_starts_host = M1.allocAndBuildRowStarts();
     }
     assert(M1.row_starts_host);
     int* M1_idx_start = M1.row_starts_host->idx_start_;
-  
 
-  
-  
-  
-  
     double* M1values = M1.M();
     const double* M2values = M2.M();
   
