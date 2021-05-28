@@ -1448,7 +1448,15 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       auto& resmgr = umpire::ResourceManager::getInstance();
       umpire::Allocator devalloc = resmgr.getAllocator(mem_space_);
       int* m1_row_start = static_cast<int*>(devalloc.allocate((m1+1)*sizeof(int)));
-    
+
+      RAJA::forall<hiop_raja_exec>(
+        RAJA::RangeSegment(0, m1+1),
+        RAJA_LAMBDA(RAJA::Index_type i)
+        {
+          m1_row_start[i] = 0;
+        }
+      );
+
       RAJA::forall<hiop_raja_exec>(
         RAJA::RangeSegment(0, m2),
         RAJA_LAMBDA(RAJA::Index_type i)
@@ -1459,9 +1467,9 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
           if(nnz_in_row > 0 && M2iRow[k_base] == M2jCol[k_base]) {
             // first nonzero in this row is a diagonal term 
             // skip it since we will defined the diagonal nonezero
-            m1_row_start[i] = nnz_in_row-1;
+            m1_row_start[i+1] = nnz_in_row-1;
           } else {
-            m1_row_start[i] = nnz_in_row;
+            m1_row_start[i+1] = nnz_in_row;
           }
         }
       );
