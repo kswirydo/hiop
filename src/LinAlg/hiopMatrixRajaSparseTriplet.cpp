@@ -1469,7 +1469,7 @@ void hiopMatrixRajaSymSparseTriplet::set_Hess_FR(const hiopMatrixSparse& Hess,
       RAJA::inclusive_scan_inplace<hiop_raja_exec>(m1_row_start,m1_row_start+m1+1,RAJA::operators::plus<int>());
       
       umpire::Allocator hostalloc = resmgr.getAllocator("HOST");
-      int work_host_ = static_cast<int*>(hostAlloc.allocate((m1+1) * sizeof(int)));
+      int *work_host_ = static_cast<int*>(hostAlloc.allocate((m1+1) * sizeof(int)));
       resmgr.copy(work_host_, m1_row_start);
       for(int ii=0;ii<m1+1;ii++){
         std::cout<< wrok_host_[ii] << std::endl;
