@@ -881,6 +881,7 @@ hiopMatrixRajaSparseTriplet::allocAndBuildRowStarts() const
   int it_triplet = 0;
   rsi->idx_start_[0] = 0;
     std::cout<< "nrow:" << this->nrows_ << ":" << this->nnz_<<std::endl;
+    std::cout<< "nrow:" << nrows_ << ":" << nnz_<<std::endl;
 
   for(int i = 1; i <= this->nrows_; i++)
   {
