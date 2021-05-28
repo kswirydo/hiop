@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 
     /// @todo: use linear algebra factory for this
     hiop::hiopMatrixSparse* m2xn_sparse = 
-      hiop::LinearAlgebraFactory::createMatrixSparse(M2, N_global, nnz2, mem_space);
+      hiop::LinearAlgebraFactory::createMatrixSparse(M2, N_global, nnz2);
     test.initializeMatrix(m2xn_sparse, entries_per_row);
 
     hiop::hiopMatrixRajaDense mxm2_dense(M_global, M2, mem_space);
@@ -237,7 +237,7 @@ int main(int argc, char** argv)
     fail += test.matrixAddMDinvNtransToSymDeMatUTri(*mxn_sparse, *m2xn_sparse, vec_n, W_dense, i_offset, j_offset);
 
     // copy sparse matrix to dense matrix
-    hiop::hiopMatrixRajaDense mxn_dense(M_global, N_global);
+    hiop::hiopMatrixRajaDense mxn_dense(M_global, N_global, mem_space);
     fail += test.matrix_copy_to(mxn_dense, *mxn_sparse);
   
     // extend a sparse matrix [C;D] to [C -I I 0 0; D 0 0 -I I]
