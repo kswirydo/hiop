@@ -241,7 +241,7 @@ int main(int argc, char** argv)
     fail += test.matrix_copy_to(mxn_dense, *mxn_sparse);
   
     // extend a sparse matrix [C;D] to [C -I I 0 0; D 0 0 -I I]
-    hiop::hiopMatrixRajaDense m3xn3_dense(M_global+M2, N_global+2*(M_global+M2));
+    hiop::hiopMatrixRajaDense m3xn3_dense(M_global+M2, N_global+2*(M_global+M2),mem_space);
     local_ordinal_type nnz3 = nnz + nnz2 + 2*M_global + 2*M2;
     hiop::hiopMatrixSparse* m3xn3_sparse = 
       hiop::LinearAlgebraFactory::createMatrixSparse(M_global+M2, N_global+2*(M_global+M2), nnz3);
