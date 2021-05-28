@@ -1010,6 +1010,8 @@ public:
     
     A.set_Jac_FR(C, D, A.i_row(), A.j_col(), A.M());
 
+
+    std::cout<< "set OK" << std::endl;
     // copy to dense matrix
     A.copy_to(W);
 
@@ -1017,7 +1019,8 @@ public:
     const auto* jCol = getColumnIndices(&A);
     auto nnz = A.numberOfNonzeros();
 
-    
+        std::cout<< "set OK2" << std::endl;
+
 
 
     fail += verifyAnswer(&W,
