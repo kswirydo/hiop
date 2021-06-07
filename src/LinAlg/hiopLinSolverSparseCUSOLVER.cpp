@@ -142,16 +142,14 @@ namespace hiop
 
     //descriptors
     cusparseCreateMatDescr(&descrA);
-    cusparseCreateMatDescr(&descrA);
     cusparseSetMatType(descrA, CUSPARSE_MATRIX_TYPE_GENERAL);
     cusparseSetMatIndexBase(descrA, CUSPARSE_INDEX_BASE_ZERO);
 
     cusparseCreateMatDescr(&descrM);
-    cusparseCreateMatDescr(&descrM);
     cusparseSetMatType(descrM, CUSPARSE_MATRIX_TYPE_GENERAL);
     cusparseSetMatIndexBase(descrM, CUSPARSE_INDEX_BASE_ZERO);
-   
-   //info (data structure where factorization is stored)
+
+    //info (data structure where factorization is stored)
     cusolverSpCreateCsrluInfoHost(&info_lu);
     cusolverSpCreateGluInfo(&info_M);
 
@@ -180,24 +178,42 @@ namespace hiop
         if(index_covert_extra_Diag2CSR_[i] != -1)
           kVal_[index_covert_extra_Diag2CSR_[i]] += M.M()[M.numberOfNonzeros()-n_+i];
       }
-// somehow update the matrix not sure how
-//     spss.set_csr_matrix(n_, kRowPtr_, jCol_, kVal_, true);
+      // somehow update the matrix not sure how
+      //     spss.set_csr_matrix(n_, kRowPtr_, jCol_, kVal_, true);
     }
 
-//factor here
+    //factor here
 
-      Symbolic = klu_analyze(m_, kRowPtr_, jCol_, &Common) ;
+    Symbolic = klu_analyze(m_, kRowPtr_, jCol_, &Common) ;
 
-      if (Symbolic == NULL){
-	klu_error_codes(&Common);
-}
+    if (Symbolic == NULL){
+      klu_error_codes(&Common);
+    }
 
-      Numeric = klu_factor(kRowPtr_, jCol_, kVal_, Symbolic, &Common);
-      if (Numeric == NULL){
-	klu_error_codes(&Common);
-      }
+    Numeric = klu_factor(kRowPtr_, jCol_, kVal_, Symbolic, &Common);
+    if (Numeric == NULL){
+      klu_error_codes(&Common);
+    }
+    /* parse the factorization */
 
-//end of factor
+    mia = (int*)malloc(sizeof(int)*(M->n+1));
+    mja = (int*)malloc(sizeof(int)*M->nnz);
+    /* setup GLU */ 
+    sp_status = cusolverSpDgluSetup(
+        handle_cusolver,
+        m_,
+        nnz_,
+        descrA,
+        A->csr_ia,
+        A->csr_ja,
+        P, /* base-0 */
+        Q, /* base-0 */
+        M->nnz, /* nnzM */
+        descrM,
+        M->csr_ia,
+        M->csr_ja,
+        info_M);
+    //end of factor
     nlp_->runStats.linsolv.tmInertiaComp.start();
     int negEigVal = nFakeNegEigs_;
     nlp_->runStats.linsolv.tmInertiaComp.stop();
@@ -218,13 +234,13 @@ namespace hiop
     double* dx = x->local_data();
     double* drhs = rhs->local_data();
 
-  //  spss.solve(drhs, dx);
-//solve HERE
+    //  spss.solve(drhs, dx);
+    //solve HERE
 
 
 
     nlp_->runStats.linsolv.tmTriuSolves.stop();
-    
+
     delete rhs; rhs=nullptr;
     return 1;
   }

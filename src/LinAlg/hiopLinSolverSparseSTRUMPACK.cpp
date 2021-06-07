@@ -135,6 +135,10 @@ namespace hiop
     spss.options().set_matching(MatchingJob::NONE);
 //    spss.options().enable_METIS_NodeNDP();
     
+    spss.options().set_Krylov_solver(KrylovSolver::PREC_GMRES);
+    spss.options().set_GramSchmidt_type(GramSchmidtType::MODIFIED);
+    spss.options().set_nd_param(25);
+printf("Setting solver to gmres \n");
     if(nlp_->options->GetString("compute_mode")=="cpu")
     {
       spss.options().disable_gpu();
@@ -237,7 +241,11 @@ namespace hiop
     */
 //    spss.options().set_matching(MatchingJob::NONE);
     spss.options().enable_METIS_NodeNDP();
-    if(nlp_->options->GetString("compute_mode")=="cpu")
+    spss.options().set_Krylov_solver(KrylovSolver::PREC_GMRES);
+    spss.options().set_GramSchmidt_type(GramSchmidtType::MODIFIED);
+    spss.options().set_nd_param(25);
+printf("Setting solver to gmres \n");
+if(nlp_->options->GetString("compute_mode")=="cpu")
     {
       spss.options().disable_gpu();
     }

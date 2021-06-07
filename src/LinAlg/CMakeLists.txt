@@ -19,7 +19,10 @@ if(HIOP_SPARSE)
     endif(HIOP_USE_COINHSL)      
     if(HIOP_USE_STRUMPACK)
       set(hiopLinAlg_SRC ${hiopLinAlg_SRC} hiopLinSolverSparseSTRUMPACK.cpp)
-    endif(HIOP_USE_STRUMPACK)
+    endif(HIOP_USE_STRUMPACK) 
+    if(HIOP_USE_CUSOLVER)
+      set(hiopLinAlg_SRC ${hiopLinAlg_SRC} hiopLinSolverSparseCUSOLVER.cpp)
+    endif(HIOP_USE_CUSOLVER) 
 endif()
 
 # Add RAJA/Umpire sources when enabled

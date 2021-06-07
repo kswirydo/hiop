@@ -48,7 +48,7 @@
 
 #ifndef HIOP_LINSOLVER_CUSOLVER
 #define HIOP_LINSOLVER_CUSOLVER
-
+#endif
 
 #include "hiopLinSolver.hpp"
 #include "hiopMatrixSparseTriplet.hpp"
@@ -98,39 +98,42 @@ namespace hiop
       int *index_covert_extra_Diag2CSR_;
 
       int nFakeNegEigs_;
-/** needed for cuSolver **/
+      /** needed for cuSolver **/
 
-  cusolverStatus_t sp_status;
-  cusparseHandle_t handle = 0;
-  cusolverSpHandle_t handle_cusolver = NULL;
-  cublasHandle_t handle_cublas;
-  
-  cusparseMatDescr_t descrA, descrM;
-  csrluInfoHost_t info_lu = NULL;
-  csrgluInfo_t info_M = NULL;
-  
-  size_t bufferSize;
-  size_t size_M;
-  double *d_work;
-  int ite_refine_succ = 0;
-  double r_nrminf; //, x_nrminf, b_nrminf;
+      cusolverStatus_t sp_status;
+      cusparseHandle_t handle = 0;
+      cusolverSpHandle_t handle_cusolver = NULL;
+      cublasHandle_t handle_cublas;
 
-  int *P = NULL;
-  int *Q = NULL;
-  
-  // KLU stuff
-  int kluStatus;
-  klu_common Common;
-  klu_symbolic *Symbolic = NULL;
-  klu_numeric *Numeric = NULL;
-  /* cholmod utils */
-  cholmod_common ch;
-  cholmod_sparse *AChol = NULL;
-  void *Atemp;
-  int Atype;
-  int klu_ordering = 1;        /* 0: AMD, 1: COLAMD */
-  double KLU_threshold = 0.01; /* default */
-  public:
+      cusparseMatDescr_t descrA, descrM;
+      csrluInfoHost_t info_lu = NULL;
+      csrgluInfo_t info_M = NULL;
+
+      size_t bufferSize;
+      size_t size_M;
+      double *d_work;
+      int ite_refine_succ = 0;
+      double r_nrminf; //, x_nrminf, b_nrminf;
+
+      int *P = NULL;
+      int *Q = NULL;
+
+      // KLU stuff
+      int kluStatus;
+      klu_common Common;
+      klu_symbolic *Symbolic = NULL;
+      klu_numeric *Numeric = NULL;
+      /* cholmod utils */
+      cholmod_common ch;
+      cholmod_sparse *AChol = NULL;
+      int Atype;
+      int klu_ordering = 1;        /* 0: AMD, 1: COLAMD */
+      double KLU_threshold = 0.01; /* default */
+      /*pieces of M */
+      int *mia,*mja;
+      double *mval;
+
+    public:
 
       /** called the very first time a matrix is factored. Perform KLU factorization, allocate all aux variables */
       virtual void firstCall();
@@ -144,53 +147,53 @@ namespace hiop
 
   };
 
-class hiopLinSolverNonSymSparseCUSOLVER: public hiopLinSolverNonSymSparse
-{
-public:
-  hiopLinSolverNonSymSparseCUSOLVER(const int& n, const int& nnz, hiopNlpFormulation* nlp);
-
-  virtual ~hiopLinSolverNonSymSparseCUSOLVER();
-
-  /** Triggers a SuiteSparse KLU refactorization of the matrix, if necessary.
-   * Overload from base class. */
-  int matrixChanged();
-
-  /** solves a linear system.
-   * param 'x' is on entry the right hand side(s) of the system to be solved. On
-   * exit is contains the solution(s).  */
-  bool solve ( hiopVector& x_ );
-
-
-private:
-
-  int      m_;                         // number of rows of the whole matrix
-  int      n_;                         // number of cols of the whole matrix
-  int      nnz_;                       // number of nonzeros in the matrix
-
-  int     *kRowPtr_;                   // row pointer for nonzeros
-  int     *jCol_;                      // column indexes for nonzeros
-  double  *kVal_;                      // storage for sparse matrix
-
-  int *index_covert_CSR2Triplet_;
-  int *index_covert_extra_Diag2CSR_;
-  std::unordered_map<int,int> extra_diag_nnz_map;
-
-  int nFakeNegEigs_;
-
-public:
-
-  /** called the very first time a matrix is factored. */
-  void firstCall();
-//  virtual void diagonalChanged( int idiag, int extent );
-
-  void inline setFakeInertia(int nNegEigs)
+  class hiopLinSolverNonSymSparseCUSOLVER: public hiopLinSolverNonSymSparse
   {
-    nFakeNegEigs_ = nNegEigs;
-  }
+    public:
+      hiopLinSolverNonSymSparseCUSOLVER(const int& n, const int& nnz, hiopNlpFormulation* nlp);
 
-friend class hiopLinSolverIndefSparseCUSOLVER;
+      virtual ~hiopLinSolverNonSymSparseCUSOLVER();
 
-};
+      /** Triggers a SuiteSparse KLU refactorization of the matrix, if necessary.
+       * Overload from base class. */
+      int matrixChanged();
+
+      /** solves a linear system.
+       * param 'x' is on entry the right hand side(s) of the system to be solved. On
+       * exit is contains the solution(s).  */
+      bool solve ( hiopVector& x_ );
+
+
+    private:
+
+      int      m_;                         // number of rows of the whole matrix
+      int      n_;                         // number of cols of the whole matrix
+      int      nnz_;                       // number of nonzeros in the matrix
+
+      int     *kRowPtr_;                   // row pointer for nonzeros
+      int     *jCol_;                      // column indexes for nonzeros
+      double  *kVal_;                      // storage for sparse matrix
+
+      int *index_covert_CSR2Triplet_;
+      int *index_covert_extra_Diag2CSR_;
+      std::unordered_map<int,int> extra_diag_nnz_map;
+
+      int nFakeNegEigs_;
+
+    public:
+
+      /** called the very first time a matrix is factored. */
+      void firstCall();
+      //  virtual void diagonalChanged( int idiag, int extent );
+
+      void inline setFakeInertia(int nNegEigs)
+      {
+        nFakeNegEigs_ = nNegEigs;
+      }
+
+      friend class hiopLinSolverIndefSparseCUSOLVER;
+
+  };
 
 }//namespace hiop
 
